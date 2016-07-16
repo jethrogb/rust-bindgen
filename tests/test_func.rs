@@ -63,24 +63,24 @@ fn func_ptr_in_struct() {
 #[test]
 fn func_proto() {
     assert_bind_eq(Default::default(), "headers/func_proto.h", "
-        pub type foo = extern \"C\" fn(bar: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
+        pub type foo = ::std::option::Option<extern \"C\" fn(bar: ::std::os::raw::c_int) -> ::std::os::raw::c_int>;
     ");
 }
 
 #[test]
 fn func_no_proto() {
     assert_bind_eq(Default::default(), "headers/func_no_proto.h", "
-        pub type no_proto = extern \"C\" fn() -> ::std::os::raw::c_int;
+        pub type no_proto = ::std::option::Option<extern \"C\" fn() -> ::std::os::raw::c_int>;
     ");
 }
 
 #[test]
 fn with_func_ptr_arg() {
     assert_bind_eq(Default::default(), "headers/func_with_func_ptr_arg.h", "
-        pub type ty = extern \"C\" fn() -> ::std::os::raw::c_int;
+        pub type ty = ::std::option::Option<extern \"C\" fn() -> ::std::os::raw::c_int>;
         extern \"C\" {
             pub fn foo(bar: ::std::option::Option<extern \"C\" fn()>);
-            pub fn function(proc_: *mut ty);
+            pub fn function(proc_: ty);
         }
     ");
 }
