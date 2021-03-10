@@ -2,6 +2,8 @@
 
 pub use crate::ir::enum_ty::{EnumVariantCustomBehavior, EnumVariantValue};
 pub use crate::ir::int::IntKind;
+pub use crate::ir::analysis::DeriveTrait;
+pub use crate::ir::derive::CanDerive as ImplementsTrait;
 use std::fmt;
 use std::panic::UnwindSafe;
 
@@ -76,4 +78,21 @@ pub trait ParseCallbacks: fmt::Debug + UnwindSafe {
 
     /// This will be called on every file inclusion, with the full path of the included file.
     fn include_file(&self, _filename: &str) {}
+
+    /// This will be called to determine whether a particular blocklisted type
+    /// implements a trait or not. This will be used to implement traits on
+    /// other types containing the blocklisted type.
+    ///
+    /// * `None`: use the default behavior
+    /// * `Some(ImplementsTrait::Yes)`: `_name` implements `_derive_trait`
+    /// * `Some(ImplementsTrait::Manually)`: any type including `_name` can't
+    ///   derive `_derive_trait` but can implemented it manually
+    /// * `Some(ImplementsTrait::No)`: `_name` doesn't implement `_derive_trait`
+    fn blocklisted_type_implements_trait(
+        &self,
+        _name: &str,
+        _derive_trait: DeriveTrait
+    ) -> Option<ImplementsTrait> {
+        None
+    }
 }
